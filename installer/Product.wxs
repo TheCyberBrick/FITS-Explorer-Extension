@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?if $(var.Platform) = x64 ?>
+<?define ProductName = "FITS Explorer Extension (64 bit)" ?>
+<?define Win64 = "yes" ?>
+<?define Arch = "x64" ?>
+<?define ArchSuffix = "" ?>
+<?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+<?define Resources = "resources\" ?>
+<?define Binaries = "resources\bin\x64\" ?>
+<?else ?>
+<?define ProductName = "FITS Explorer Extension (32 bit)" ?>
+<?define Win64 = "no" ?>
+<?define Arch = "x86" ?>
+<?define ArchSuffix = "32" ?>
+<?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+<?define Resources = "resources\" ?>
+<?define Binaries = "resources\bin\x86\" ?>
+<?endif ?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="$(var.ProductName)" Language="1033" Version="1.0.0.0" Manufacturer="TCB" UpgradeCode="a7e7d7c8-c8b3-4482-b785-b996c176fd20">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    
+    <MajorUpgrade DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.Resources)lgpl-2.1.rtf" />
+    <UIRef Id="WixUI_FeatureTree" />
+
+    <Feature Id="FITSExplorerExtension" Title="FITS Explorer Extension" Level="1" Absent="disallow" AllowAdvertise="no" TypicalDefault="install" Display="expand" Description="Essential components, e.g., the thumbnail extension." ConfigurableDirectory="INSTALLFOLDER">
+      <ComponentGroupRef Id="EssentialComponents" />
+
+      <Feature Id="VCRedist" Title="Visual C++ 14.0 Runtime" AllowAdvertise="no" Display="hidden" Level="1">
+        <MergeRef Id="VCRedist"/>
+      </Feature>
+
+      <Feature Id="AppAssocFeature" Title="Extensions for other applications" Level="1" Absent="allow" AllowAdvertise="no" InstallDefault="followParent" TypicalDefault="install" Display="expand" Description="Extensions for other applications. This enables .fits/.fit file tooltips and file properties details for the listed applications." ConfigurableDirectory="INSTALLFOLDER">
+        <FeatureGroupRef Id="AssocAppFeatures"/>
+      </Feature>
+    </Feature>
+
+    <InstallUISequence>
+      <Custom Action='SetAssociatedApplications' Before='CostInitialize'/>
+    </InstallUISequence>
+    
+    <InstallExecuteSequence>
+      <Custom Action='SetAssociatedApplications' Before='CostInitialize'/>
+      <Custom Action='NotifyShellAssocChanged' After='InstallFinalize'/>
+    </InstallExecuteSequence>
+  </Product>
+
+  <Fragment>
+    <Binary Id='installerdll.dll' SourceFile='$(var.Resources)bin\installerdll.dll'/>
+    <CustomAction Id='SetAssociatedApplications' BinaryKey='installerdll.dll' DllEntry='SetAssociatedApplications' Execute='immediate' Return='check'/>
+    <CustomAction Id='NotifyShellAssocChanged' BinaryKey='installerdll.dll' DllEntry='NotifyShellAssocChanged' Execute='immediate' Return='check'/>
+  </Fragment>
+  
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="$(var.PlatformProgramFilesFolder)">
+        <Directory Id="INSTALLFOLDER" Name="FITS Explorer Extension">
+          <Merge Id="VCRedist" SourceFile="$(var.Resources)Microsoft_VC140_CRT_$(var.Arch).msm" DiskId="1" Language="0"/>
+        </Directory>
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="EssentialComponents" Directory="INSTALLFOLDER">
+      <Component Id="FITSExplorerExtension.dll" Win64="$(var.Win64)" Guid="a6eb961f-5127-46db-ab81-4bc2a72e6e72">
+        <File Id="FITSExplorerExtension.dll" Source="$(var.Binaries)FITSExplorerExtension$(var.ArchSuffix).dll" KeyPath="yes" />
+      </Component>
+      <Component Id="cfitsio.dll" Win64="$(var.Win64)" Guid="38904931-f9a2-4741-a22e-51ae6e475634">
+        <File Id="cfitsio.dll" Source="$(var.Binaries)cfitsio$(var.ArchSuffix).dll" KeyPath="yes" />
+      </Component>
+      <Component Id="zlib.dll" Win64="$(var.Win64)" Guid="34d66c39-f6f8-42b4-b440-ff02b1118e29">
+        <File Id="zlib.dll" Source="$(var.Binaries)zlib$(var.ArchSuffix).dll" KeyPath="yes" />
+      </Component>
+      <ComponentRef Id="COMRegistryComponent" />
+    </ComponentGroup>
+  </Fragment>
+</Wix>

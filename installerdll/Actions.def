@@ -1,0 +1,5 @@
+LIBRARY "installerdll"
+
+EXPORTS
+	SetAssociatedApplications
+	NotifyShellAssocChanged
