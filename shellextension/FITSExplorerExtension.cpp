@@ -191,7 +191,7 @@ HRESULT CFITSExplorerExtension::_LoadFITSPropertyCache()
 					PropVariantClear(&propvarContent);
 				}
 
-				hr = InitPropVariantFromUInt32(abs(_pFITSInfo->inDim().depth), &propvarContent);
+				hr = InitPropVariantFromUInt32(abs(_pFITSInfo->storageType().fitsBitdepth), &propvarContent);
 				if (SUCCEEDED(hr))
 				{
 					hr = _pFITSPropertyCache->SetValueAndState(PKEY_Image_BitDepth, &propvarContent, PSC_NORMAL);

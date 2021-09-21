@@ -58,6 +58,9 @@ struct Kernel
 	// (1 + 2 * size) x (1 + 2 * size) row major matrix
 	float *weights;
 
+	// offset to be added to each output pixel
+	T offset;
+
 	// input data size
 	int inputWidth, inputHeight;
 
@@ -75,7 +78,7 @@ struct Kernel
 	IteratorData<T> it;
 
 	Kernel() :
-		size(0), stride(0), inputWidth(0), inputHeight(0),
+		size(0), stride(0), weights(0), offset(0), inputWidth(0), inputHeight(0),
 		cfa(nullptr), rgb(false), outData(nullptr), it()
 	{
 
@@ -170,7 +173,7 @@ int KernelDataIterator(long totaln, long offset, long firstn, long nvalues, int 
 									vsum += kernel.weights[kernelY * iteratorData.kernelDim + kernelX - kernelStart] * (float)buffer[(iteratorData.bufferProcessingIndex + (kernelY * kernel.inputWidth + kernelX)) % iteratorData.bufferSize];
 								}
 							}
-							outData[iteratorData.outY * iteratorData.outputWidth + outX] = (T)vsum;
+							outData[iteratorData.outY * iteratorData.outputWidth + outX] = (T)vsum + kernel.offset;
 						}
 						else
 						{
@@ -194,9 +197,9 @@ int KernelDataIterator(long totaln, long offset, long firstn, long nvalues, int 
 								}
 							}
 							int const pixPerPlane = iteratorData.outputWidth * iteratorData.outputHeight;
-							outData[iteratorData.outY * iteratorData.outputWidth + outX + 0 * pixPerPlane] = (T)rsum;
-							outData[iteratorData.outY * iteratorData.outputWidth + outX + 1 * pixPerPlane] = (T)gsum;
-							outData[iteratorData.outY * iteratorData.outputWidth + outX + 2 * pixPerPlane] = (T)bsum;
+							outData[iteratorData.outY * iteratorData.outputWidth + outX + 0 * pixPerPlane] = (T)rsum + kernel.offset;
+							outData[iteratorData.outY * iteratorData.outputWidth + outX + 1 * pixPerPlane] = (T)gsum + kernel.offset;
+							outData[iteratorData.outY * iteratorData.outputWidth + outX + 2 * pixPerPlane] = (T)bsum + kernel.offset;
 						}
 					}
 

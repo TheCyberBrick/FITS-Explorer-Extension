@@ -10,13 +10,13 @@
 #include <array>
 
 #include "fitsio.h"
+#include "fitstypeutil.h"
 
 typedef struct
 {
 	int nx;
 	int ny;
 	int nc;
-	int depth;
 	uint32_t n;
 } FITSImageDim;
 
@@ -61,6 +61,8 @@ public:
 	bool isHeaderValid() { return _isHeaderValid; };
 	FITSImageDim inDim() { return _imgDim; };
 	FITSImageDim outDim() { return _outDim; };
+	FITSDatatype storageType() { return _storageType; };
+	FITSDatatype readType() { return _readType; };
 	std::string bayerPattern() { return _bayerPattern; };
 	bool hasCfa() { return _hasCfa; };
 	std::array<float, 12> cfa() { return _cfa; };
@@ -90,6 +92,8 @@ private:
 	int _maxWidth;
 	int _maxHeight;
 	size_t _maxInputSize;
+	FITSDatatype _storageType;
+	FITSDatatype _readType;
 	float _kernelSize;
 	int _kernelStride;
 	std::string _bayerPattern;
@@ -115,10 +119,7 @@ private:
 	int ReadDateKeyword(char *key, FITSDate *value, int *status);
 
 	template<typename T>
-	bool ReadImage(unsigned char *data, FITSImageReadProps props);
-
-	template<typename T>
-	int GetFitsDataType();
+	bool ReadImage(int fits_datatype, bool issigned, unsigned char *data, FITSImageReadProps props);
 
 	template<typename T>
 	void ProcessImage(std::valarray<T>& data);

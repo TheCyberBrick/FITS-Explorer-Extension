@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <vector>
 #include <numeric>
+#include <limits>
 #include <algorithm>
 #include <cctype>
 
@@ -162,14 +163,25 @@ void FITSInfo::ReadHeader()
 				break;
 			}
 
-			// ---- Read image depth (negative = float/double) ----
+			// ---- Read image type (negative = float/double) ----
 
-			int depth;
+			int img_type;
 			status = 0;
-			if (fits_get_img_type(_fitsFile, &depth, &status))
+			if (fits_get_img_type(_fitsFile, &img_type, &status))
 			{
 				break;
 			}
+
+			_storageType = GetFITSDatatypeFromImgType(img_type);
+
+			int img_equiv_type;
+			status = 0;
+			if (fits_get_img_equivtype(_fitsFile, &img_equiv_type, &status))
+			{
+				break;
+			}
+
+			_readType = GetFITSDatatypeFromImgType(img_equiv_type);
 
 			// ---- Read image dimensions ----
 
@@ -214,7 +226,6 @@ void FITSInfo::ReadHeader()
 			_imgDim.nx = static_cast<int>(size[0]);
 			_imgDim.ny = static_cast<int>(size[1]);
 			_imgDim.nc = size.size() == 3 ? 3 : 1;
-			_imgDim.depth = depth;
 			_imgDim.n = (uint32_t)_imgDim.nx * (uint32_t)_imgDim.ny * (uint32_t)_imgDim.nc;
 
 			int width = _imgDim.nx;
@@ -268,13 +279,15 @@ void FITSInfo::ReadHeader()
 			int outWidth = (width - 2 * (int)ceil(_kernelSize)) / _kernelStride;
 			int outHeight = (height - 2 * (int)ceil(_kernelSize)) / _kernelStride;
 
+			_outDim.nx = outWidth;
+			_outDim.ny = outHeight;
 			if (_imgDim.nc == 1 && !_hasCfa)
 			{
-				_outDim = { outWidth, outHeight, 1, 8 };
+				_outDim.nc = 1;
 			}
 			else
 			{
-				_outDim = { outWidth, outHeight, 3, 8 };
+				_outDim.nc = 3;
 			}
 			_outDim.n = _outDim.nx * _outDim.ny * _outDim.nc;
 
@@ -368,21 +381,9 @@ void FITSInfo::ReadHeader()
 	}
 }
 
-template<>
-int FITSInfo::GetFitsDataType<uint16_t>()
-{
-	return TUSHORT;
-}
-
-template<>
-int FITSInfo::GetFitsDataType<float>()
-{
-	return TFLOAT;
-}
-
 bool FITSInfo::ReadImage(unsigned char *data, FITSImageReadProps props)
 {
-	if (!_isHeaderValid || ((size_t)_imgDim.n * (size_t)abs(_imgDim.depth) / 8 > _maxInputSize))
+	if (!_isHeaderValid || ((size_t)_imgDim.n * _readType.size > _maxInputSize))
 	{
 		return false;
 	}
@@ -391,18 +392,34 @@ bool FITSInfo::ReadImage(unsigned char *data, FITSImageReadProps props)
 
 	SetDriver();
 
-	if (_imgDim.depth == SHORT_IMG)
+	if (_readType.fitsDatatype == TFLOAT || _readType.fitsDatatype == TDOUBLE)
 	{
-		return ReadImage<uint16_t>(data, props);
+		return ReadImage<float>(_readType.fitsDatatype, false, data, props);
+	}
+	else if (_readType.size == 1)
+	{
+		return ReadImage<uint8_t>(_readType.fitsDatatype, _readType.isSigned, data, props);
+	}
+	else if (_readType.size == 2)
+	{
+		return ReadImage<uint16_t>(_readType.fitsDatatype, _readType.isSigned, data, props);
+	}
+	else if (_readType.size == 4)
+	{
+		return ReadImage<uint32_t>(_readType.fitsDatatype, _readType.isSigned, data, props);
+	}
+	else if (_readType.size == 8)
+	{
+		return ReadImage<uint32_t>(_readType.fitsDatatype, _readType.isSigned, data, props);
 	}
 	else
 	{
-		return ReadImage<float>(data, props);
+		return ReadImage<float>(_readType.fitsDatatype, false, data, props);
 	}
 }
 
 template<typename T>
-bool FITSInfo::ReadImage(unsigned char *data, FITSImageReadProps props)
+bool FITSInfo::ReadImage(int fits_datatype, bool issigned, unsigned char *data, FITSImageReadProps props)
 {
 	long fpixel(1);
 	T nulval(0);
@@ -443,6 +460,7 @@ bool FITSInfo::ReadImage(unsigned char *data, FITSImageReadProps props)
 	kernel.size = fullKernelSize;
 	kernel.stride = _kernelStride;
 	kernel.weights = &weights[0];
+	kernel.offset = issigned ? std::numeric_limits<T>::max() : 0;
 	kernel.inputWidth = _imgDim.nx;
 	kernel.inputHeight = _imgDim.ny;
 	kernel.outData = &imgData[0];
@@ -450,7 +468,7 @@ bool FITSInfo::ReadImage(unsigned char *data, FITSImageReadProps props)
 	kernel.rgb = _outDim.nc == 3;
 
 	int status = 0;
-	if (ReadData(_fitsFile, GetFitsDataType<T>(), &kernel, &status) != 0)
+	if (ReadData(_fitsFile, fits_datatype, &kernel, &status) != 0)
 	{
 		return false;
 	}
