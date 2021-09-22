@@ -12,7 +12,7 @@ struct PROPERTYLIST
 
 const LPWSTR SZ_PROG_ID = L"FITSExplorerExtension";
 const LPWSTR SZ_PROG_NAME = L"FITS Explorer Extension";
-const LPWSTR SZ_FILE_EXT[] = { L"fit", L"fits" };
+const LPWSTR SZ_FILE_EXT[] = { L"fit", L"fits", L"fts" };
 
 const PROPERTYLIST PROPERTY_LISTS[] = {
 	{ L"InfoTip",            L"prop:System.Image.Dimensions;System.Image.BitDepth;System.Photo.ExposureTime;System.Photo.FocalLength;System.Photo.Aperture;System.Size" },

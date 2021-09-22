@@ -1,6 +1,6 @@
 # FITS Explorer Extension
 
-This application enables the Windows Explorer to show thumbnails for .fit/.fits images which are commonly used in astrophotography.
+This application enables the Windows Explorer to show thumbnails for .fit/.fits/.fts images which are commonly used in astrophotography.
 
 ##### Features
 - Auto stretch based on the PixInsight algorithm

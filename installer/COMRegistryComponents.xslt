@@ -21,7 +21,7 @@
       <xsl:with-param name="file-id" select="'FITSExplorerExtension.dll'" />
       <xsl:with-param name="hkcu-component-id" select="'COMRegistryComponentHKCU'" />
       <xsl:with-param name="hkcu-component-guid" select="'9AC82F77-FEF6-4079-B2D6-BC62FD79E6D2'" />
-      <xsl:with-param name="hkcu-keypath-position" select="5" />
+      <xsl:with-param name="hkcu-keypath-position" select="7" />
       <xsl:with-param name="hklm-component-id" select="'COMRegistryComponentHKLM'" />
       <xsl:with-param name="hklm-component-guid" select="'F0712DE2-7B4B-4BAD-A32E-F72DC5C7A724'" />
       <xsl:with-param name="hklm-keypath-position" select="2" />
