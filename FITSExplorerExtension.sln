@@ -22,6 +22,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "installerdll", "installerdl
 		{BEE47E5D-8CA6-4CE4-A830-8B80F85710F3} = {BEE47E5D-8CA6-4CE4-A830-8B80F85710F3}
 	EndProjectSection
 EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "installerbundle", "installerbundle\installerbundle.wixproj", "{1A407A67-DECE-473D-B0A3-084FB510C921}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BEE47E5D-8CA6-4CE4-A830-8B80F85710F3} = {BEE47E5D-8CA6-4CE4-A830-8B80F85710F3}
+		{0FB74060-572B-4CF7-9858-333133880025} = {0FB74060-572B-4CF7-9858-333133880025}
+		{D79CA683-FA05-440E-BE8A-9DE2C0EA626E} = {D79CA683-FA05-440E-BE8A-9DE2C0EA626E}
+		{7ABEC4FC-A924-43D7-89FA-F00E3A42DB3B} = {7ABEC4FC-A924-43D7-89FA-F00E3A42DB3B}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -58,6 +66,12 @@ Global
 		{D79CA683-FA05-440E-BE8A-9DE2C0EA626E}.Release|x64.ActiveCfg = Release|Win32
 		{D79CA683-FA05-440E-BE8A-9DE2C0EA626E}.Release|x86.ActiveCfg = Release|Win32
 		{D79CA683-FA05-440E-BE8A-9DE2C0EA626E}.Release|x86.Build.0 = Release|Win32
+		{1A407A67-DECE-473D-B0A3-084FB510C921}.Debug|x64.ActiveCfg = Debug|x86
+		{1A407A67-DECE-473D-B0A3-084FB510C921}.Debug|x86.ActiveCfg = Debug|x86
+		{1A407A67-DECE-473D-B0A3-084FB510C921}.Debug|x86.Build.0 = Debug|x86
+		{1A407A67-DECE-473D-B0A3-084FB510C921}.Release|x64.ActiveCfg = Release|x86
+		{1A407A67-DECE-473D-B0A3-084FB510C921}.Release|x86.ActiveCfg = Release|x86
+		{1A407A67-DECE-473D-B0A3-084FB510C921}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

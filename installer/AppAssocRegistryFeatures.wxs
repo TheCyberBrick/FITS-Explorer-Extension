@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <FeatureGroup Id="AppAssocFeatures">
+      <Feature Id="AppAssocFeature_HKCU_0" Title="[AssocApp_HKCU_0] (.[AssocApp_HKCU_0_EXT]) (Current user)" Level="1" Absent="allow" AllowAdvertise="no" InstallDefault="followParent" TypicalDefault="install" Description="Extensions for other applications. This enables .fits/.fit file tooltips and file properties details for the selected application." ConfigurableDirectory="INSTALLFOLDER">
+        <Condition Level="0"><![CDATA[NOT(AssocApp_HKCU_0)]]></Condition>
+        <ComponentRef Id="AssocAppHKCU0RegistryComponent" />
+      </Feature>
+      <Feature Id="AppAssocFeature_HKCU_1" Title="[AssocApp_HKCU_1] (.[AssocApp_HKCU_1_EXT]) (Current user)" Level="1" Absent="allow" AllowAdvertise="no" InstallDefault="followParent" TypicalDefault="install" Description="Extensions for other applications. This enables .fits/.fit file tooltips and file properties details for the selected application." ConfigurableDirectory="INSTALLFOLDER">
+        <Condition Level="0"><![CDATA[NOT(AssocApp_HKCU_1)]]></Condition>
+        <ComponentRef Id="AssocAppHKCU1RegistryComponent" />
+      </Feature>
+      <Feature Id="AppAssocFeature_HKCU_2" Title="[AssocApp_HKCU_2] (.[AssocApp_HKCU_2_EXT]) (Current user)" Level="1" Absent="allow" AllowAdvertise="no" InstallDefault="followParent" TypicalDefault="install" Description="Extensions for other applications. This enables .fits/.fit file tooltips and file properties details for the selected application." ConfigurableDirectory="INSTALLFOLDER">
+        <Condition Level="0"><![CDATA[NOT(AssocApp_HKCU_2)]]></Condition>
+        <ComponentRef Id="AssocAppHKCU2RegistryComponent" />
+      </Feature>
+      <Feature Id="AppAssocFeature_HKCU_3" Title="[AssocApp_HKCU_3] (.[AssocApp_HKCU_3_EXT]) (Current user)" Level="1" Absent="allow" AllowAdvertise="no" InstallDefault="followParent" TypicalDefault="install" Description="Extensions for other applications. This enables .fits/.fit file tooltips and file properties details for the selected application." ConfigurableDirectory="INSTALLFOLDER">
+        <Condition Level="0"><![CDATA[NOT(AssocApp_HKCU_3)]]></Condition>
+        <ComponentRef Id="AssocAppHKCU3RegistryComponent" />
+      </Feature>
+      <Feature Id="AppAssocFeature_HKCU_4" Title="[AssocApp_HKCU_4] (.[AssocApp_HKCU_4_EXT]) (Current user)" Level="1" Absent="allow" AllowAdvertise="no" InstallDefault="followParent" TypicalDefault="install" Description="Extensions for other applications. This enables .fits/.fit file tooltips and file properties details for the selected application." ConfigurableDirectory="INSTALLFOLDER">
+        <Condition Level="0"><![CDATA[NOT(AssocApp_HKCU_4)]]></Condition>
+        <ComponentRef Id="AssocAppHKCU4RegistryComponent" />
+      </Feature>
+      <Feature Id="AppAssocFeature_HKCU_5" Title="[AssocApp_HKCU_5] (.[AssocApp_HKCU_5_EXT]) (Current user)" Level="1" Absent="allow" AllowAdvertise="no" InstallDefault="followParent" TypicalDefault="install" Description="Extensions for other applications. This enables .fits/.fit file tooltips and file properties details for the selected application." ConfigurableDirectory="INSTALLFOLDER">
+        <Condition Level="0"><![CDATA[NOT(AssocApp_HKCU_5)]]></Condition>
+        <ComponentRef Id="AssocAppHKCU5RegistryComponent" />
+      </Feature>
+
+      <Feature Id="AppAssocFeature_HKLM_0" Title="[AssocApp_HKLM_0] (.[AssocApp_HKLM_0_EXT]) (All users)" Level="1" Absent="allow" AllowAdvertise="no" InstallDefault="followParent" TypicalDefault="install" Description="Extensions for other applications. This enables .fits/.fit file tooltips and file properties details for the selected application." ConfigurableDirectory="INSTALLFOLDER">
+        <Condition Level="0"><![CDATA[NOT(AssocApp_HKLM_0)]]></Condition>
+        <ComponentRef Id="AssocAppHKLM0RegistryComponent" />
+      </Feature>
+      <Feature Id="AppAssocFeature_HKLM_1" Title="[AssocApp_HKLM_1] (.[AssocApp_HKLM_1_EXT]) (All users)" Level="1" Absent="allow" AllowAdvertise="no" InstallDefault="followParent" TypicalDefault="install" Description="Extensions for other applications. This enables .fits/.fit file tooltips and file properties details for the selected application." ConfigurableDirectory="INSTALLFOLDER">
+        <Condition Level="0"><![CDATA[NOT(AssocApp_HKLM_1)]]></Condition>
+        <ComponentRef Id="AssocAppHKLM1RegistryComponent" />
+      </Feature>
+      <Feature Id="AppAssocFeature_HKLM_2" Title="[AssocApp_HKLM_2] (.[AssocApp_HKLM_2_EXT]) (All users)" Level="1" Absent="allow" AllowAdvertise="no" InstallDefault="followParent" TypicalDefault="install" Description="Extensions for other applications. This enables .fits/.fit file tooltips and file properties details for the selected application." ConfigurableDirectory="INSTALLFOLDER">
+        <Condition Level="0"><![CDATA[NOT(AssocApp_HKLM_2)]]></Condition>
+        <ComponentRef Id="AssocAppHKLM2RegistryComponent" />
+      </Feature>
+      <Feature Id="AppAssocFeature_HKLM_3" Title="[AssocApp_HKLM_3] (.[AssocApp_HKLM_3_EXT]) (All users)" Level="1" Absent="allow" AllowAdvertise="no" InstallDefault="followParent" TypicalDefault="install" Description="Extensions for other applications. This enables .fits/.fit file tooltips and file properties details for the selected application." ConfigurableDirectory="INSTALLFOLDER">
+        <Condition Level="0"><![CDATA[NOT(AssocApp_HKLM_3)]]></Condition>
+        <ComponentRef Id="AssocAppHKLM3RegistryComponent" />
+      </Feature>
+      <Feature Id="AppAssocFeature_HKLM_4" Title="[AssocApp_HKLM_4] (.[AssocApp_HKLM_4_EXT]) (All users)" Level="1" Absent="allow" AllowAdvertise="no" InstallDefault="followParent" TypicalDefault="install" Description="Extensions for other applications. This enables .fits/.fit file tooltips and file properties details for the selected application." ConfigurableDirectory="INSTALLFOLDER">
+        <Condition Level="0"><![CDATA[NOT(AssocApp_HKLM_4)]]></Condition>
+        <ComponentRef Id="AssocAppHKLM4RegistryComponent" />
+      </Feature>
+      <Feature Id="AppAssocFeature_HKLM_5" Title="[AssocApp_HKLM_5] (.[AssocApp_HKLM_5_EXT]) (All users)" Level="1" Absent="allow" AllowAdvertise="no" InstallDefault="followParent" TypicalDefault="install" Description="Extensions for other applications. This enables .fits/.fit file tooltips and file properties details for the selected application." ConfigurableDirectory="INSTALLFOLDER">
+        <Condition Level="0"><![CDATA[NOT(AssocApp_HKLM_5)]]></Condition>
+        <ComponentRef Id="AssocAppHKLM5RegistryComponent" />
+      </Feature>
+    </FeatureGroup>
+    
+    <DirectoryRef Id="TARGETDIR">
+      <Component Id="AssocAppHKCU0RegistryComponent" Guid="e9ae3b48-fcb6-4774-818d-e682228c719d" NeverOverwrite="yes">
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_0_Key_0]" Name="[AssocApp_HKCU_0_Name_0]" Value="[AssocApp_HKCU_0_Value_0]" Type="string" Action="write" KeyPath="yes" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_0_Key_1]" Name="[AssocApp_HKCU_0_Name_1]" Value="[AssocApp_HKCU_0_Value_1]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_0_Key_2]" Name="[AssocApp_HKCU_0_Name_2]" Value="[AssocApp_HKCU_0_Value_2]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_0_Key_3]" Name="[AssocApp_HKCU_0_Name_3]" Value="[AssocApp_HKCU_0_Value_3]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_0_Key_4]" Name="[AssocApp_HKCU_0_Name_4]" Value="[AssocApp_HKCU_0_Value_4]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_0_Key_5]" Name="[AssocApp_HKCU_0_Name_5]" Value="[AssocApp_HKCU_0_Value_5]" Type="string" Action="write" />
+      </Component>
+      <Component Id="AssocAppHKCU1RegistryComponent" Guid="66313848-1e2a-486d-9988-1a24e9d34ca2" NeverOverwrite="yes">
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_1_Key_0]" Name="[AssocApp_HKCU_1_Name_0]" Value="[AssocApp_HKCU_1_Value_0]" Type="string" Action="write" KeyPath="yes" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_1_Key_1]" Name="[AssocApp_HKCU_1_Name_1]" Value="[AssocApp_HKCU_1_Value_1]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_1_Key_2]" Name="[AssocApp_HKCU_1_Name_2]" Value="[AssocApp_HKCU_1_Value_2]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_1_Key_3]" Name="[AssocApp_HKCU_1_Name_3]" Value="[AssocApp_HKCU_1_Value_3]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_1_Key_4]" Name="[AssocApp_HKCU_1_Name_4]" Value="[AssocApp_HKCU_1_Value_4]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_1_Key_5]" Name="[AssocApp_HKCU_1_Name_5]" Value="[AssocApp_HKCU_1_Value_5]" Type="string" Action="write" />
+      </Component>
+      <Component Id="AssocAppHKCU2RegistryComponent" Guid="664d8d57-151b-48a5-8fe4-8f7876f3b604" NeverOverwrite="yes">
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_2_Key_0]" Name="[AssocApp_HKCU_2_Name_0]" Value="[AssocApp_HKCU_2_Value_0]" Type="string" Action="write" KeyPath="yes" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_2_Key_1]" Name="[AssocApp_HKCU_2_Name_1]" Value="[AssocApp_HKCU_2_Value_1]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_2_Key_2]" Name="[AssocApp_HKCU_2_Name_2]" Value="[AssocApp_HKCU_2_Value_2]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_2_Key_3]" Name="[AssocApp_HKCU_2_Name_3]" Value="[AssocApp_HKCU_2_Value_3]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_2_Key_4]" Name="[AssocApp_HKCU_2_Name_4]" Value="[AssocApp_HKCU_2_Value_4]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_2_Key_5]" Name="[AssocApp_HKCU_2_Name_5]" Value="[AssocApp_HKCU_2_Value_5]" Type="string" Action="write" />
+      </Component>
+      <Component Id="AssocAppHKCU3RegistryComponent" Guid="c72e0bca-2b3d-423d-a46b-6d8651481a29" NeverOverwrite="yes">
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_3_Key_0]" Name="[AssocApp_HKCU_3_Name_0]" Value="[AssocApp_HKCU_3_Value_0]" Type="string" Action="write" KeyPath="yes" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_3_Key_1]" Name="[AssocApp_HKCU_3_Name_1]" Value="[AssocApp_HKCU_3_Value_1]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_3_Key_2]" Name="[AssocApp_HKCU_3_Name_2]" Value="[AssocApp_HKCU_3_Value_2]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_3_Key_3]" Name="[AssocApp_HKCU_3_Name_3]" Value="[AssocApp_HKCU_3_Value_3]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_3_Key_4]" Name="[AssocApp_HKCU_3_Name_4]" Value="[AssocApp_HKCU_3_Value_4]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_3_Key_5]" Name="[AssocApp_HKCU_3_Name_5]" Value="[AssocApp_HKCU_3_Value_5]" Type="string" Action="write" />
+      </Component>
+      <Component Id="AssocAppHKCU4RegistryComponent" Guid="fece61b7-d99c-4fe3-8f47-e52d12967755" NeverOverwrite="yes">
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_4_Key_0]" Name="[AssocApp_HKCU_4_Name_0]" Value="[AssocApp_HKCU_4_Value_0]" Type="string" Action="write" KeyPath="yes" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_4_Key_1]" Name="[AssocApp_HKCU_4_Name_1]" Value="[AssocApp_HKCU_4_Value_1]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_4_Key_2]" Name="[AssocApp_HKCU_4_Name_2]" Value="[AssocApp_HKCU_4_Value_2]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_4_Key_3]" Name="[AssocApp_HKCU_4_Name_3]" Value="[AssocApp_HKCU_4_Value_3]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_4_Key_4]" Name="[AssocApp_HKCU_4_Name_4]" Value="[AssocApp_HKCU_4_Value_4]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_4_Key_5]" Name="[AssocApp_HKCU_4_Name_5]" Value="[AssocApp_HKCU_4_Value_5]" Type="string" Action="write" />
+      </Component>
+      <Component Id="AssocAppHKCU5RegistryComponent" Guid="79cf5a02-7672-4d1c-a26c-be4e7c025418" NeverOverwrite="yes">
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_5_Key_0]" Name="[AssocApp_HKCU_5_Name_0]" Value="[AssocApp_HKCU_5_Value_0]" Type="string" Action="write" KeyPath="yes" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_5_Key_1]" Name="[AssocApp_HKCU_5_Name_1]" Value="[AssocApp_HKCU_5_Value_1]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_5_Key_2]" Name="[AssocApp_HKCU_5_Name_2]" Value="[AssocApp_HKCU_5_Value_2]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_5_Key_3]" Name="[AssocApp_HKCU_5_Name_3]" Value="[AssocApp_HKCU_5_Value_3]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_5_Key_4]" Name="[AssocApp_HKCU_5_Name_4]" Value="[AssocApp_HKCU_5_Value_4]" Type="string" Action="write" />
+        <RegistryValue Root="HKCU" Key="[AssocApp_HKCU_5_Key_5]" Name="[AssocApp_HKCU_5_Name_5]" Value="[AssocApp_HKCU_5_Value_5]" Type="string" Action="write" />
+      </Component>
+
+      <Component Id="AssocAppHKLM0RegistryComponent" Guid="99a3a97b-38f6-4aeb-ad9e-7526589849bb" NeverOverwrite="yes">
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_0_Key_0]" Name="[AssocApp_HKLM_0_Name_0]" Value="[AssocApp_HKLM_0_Value_0]" Type="string" Action="write" KeyPath="yes" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_0_Key_1]" Name="[AssocApp_HKLM_0_Name_1]" Value="[AssocApp_HKLM_0_Value_1]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_0_Key_2]" Name="[AssocApp_HKLM_0_Name_2]" Value="[AssocApp_HKLM_0_Value_2]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_0_Key_3]" Name="[AssocApp_HKLM_0_Name_3]" Value="[AssocApp_HKLM_0_Value_3]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_0_Key_4]" Name="[AssocApp_HKLM_0_Name_4]" Value="[AssocApp_HKLM_0_Value_4]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_0_Key_5]" Name="[AssocApp_HKLM_0_Name_5]" Value="[AssocApp_HKLM_0_Value_5]" Type="string" Action="write" />
+      </Component>
+      <Component Id="AssocAppHKLM1RegistryComponent" Guid="09e66f48-1a1c-4318-8d10-9a408cfa3567" NeverOverwrite="yes">
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_1_Key_0]" Name="[AssocApp_HKLM_1_Name_0]" Value="[AssocApp_HKLM_1_Value_0]" Type="string" Action="write" KeyPath="yes" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_1_Key_1]" Name="[AssocApp_HKLM_1_Name_1]" Value="[AssocApp_HKLM_1_Value_1]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_1_Key_2]" Name="[AssocApp_HKLM_1_Name_2]" Value="[AssocApp_HKLM_1_Value_2]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_1_Key_3]" Name="[AssocApp_HKLM_1_Name_3]" Value="[AssocApp_HKLM_1_Value_3]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_1_Key_4]" Name="[AssocApp_HKLM_1_Name_4]" Value="[AssocApp_HKLM_1_Value_4]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_1_Key_5]" Name="[AssocApp_HKLM_1_Name_5]" Value="[AssocApp_HKLM_1_Value_5]" Type="string" Action="write" />
+      </Component>
+      <Component Id="AssocAppHKLM2RegistryComponent" Guid="cc529ee1-4552-4279-89e1-a471897f4199" NeverOverwrite="yes">
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_2_Key_0]" Name="[AssocApp_HKLM_2_Name_0]" Value="[AssocApp_HKLM_2_Value_0]" Type="string" Action="write" KeyPath="yes" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_2_Key_1]" Name="[AssocApp_HKLM_2_Name_1]" Value="[AssocApp_HKLM_2_Value_1]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_2_Key_2]" Name="[AssocApp_HKLM_2_Name_2]" Value="[AssocApp_HKLM_2_Value_2]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_2_Key_3]" Name="[AssocApp_HKLM_2_Name_3]" Value="[AssocApp_HKLM_2_Value_3]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_2_Key_4]" Name="[AssocApp_HKLM_2_Name_4]" Value="[AssocApp_HKLM_2_Value_4]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_2_Key_5]" Name="[AssocApp_HKLM_2_Name_5]" Value="[AssocApp_HKLM_2_Value_5]" Type="string" Action="write" />
+      </Component>
+      <Component Id="AssocAppHKLM3RegistryComponent" Guid="f5065ee3-26e8-404c-950e-f36ddb40ca66" NeverOverwrite="yes">
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_3_Key_0]" Name="[AssocApp_HKLM_3_Name_0]" Value="[AssocApp_HKLM_3_Value_0]" Type="string" Action="write" KeyPath="yes" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_3_Key_1]" Name="[AssocApp_HKLM_3_Name_1]" Value="[AssocApp_HKLM_3_Value_1]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_3_Key_2]" Name="[AssocApp_HKLM_3_Name_2]" Value="[AssocApp_HKLM_3_Value_2]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_3_Key_3]" Name="[AssocApp_HKLM_3_Name_3]" Value="[AssocApp_HKLM_3_Value_3]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_3_Key_4]" Name="[AssocApp_HKLM_3_Name_4]" Value="[AssocApp_HKLM_3_Value_4]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_3_Key_5]" Name="[AssocApp_HKLM_3_Name_5]" Value="[AssocApp_HKLM_3_Value_5]" Type="string" Action="write" />
+      </Component>
+      <Component Id="AssocAppHKLM4RegistryComponent" Guid="c98e1e8c-054d-4d9a-940d-2073e4cbf8b5" NeverOverwrite="yes">
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_4_Key_0]" Name="[AssocApp_HKLM_4_Name_0]" Value="[AssocApp_HKLM_4_Value_0]" Type="string" Action="write" KeyPath="yes" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_4_Key_1]" Name="[AssocApp_HKLM_4_Name_1]" Value="[AssocApp_HKLM_4_Value_1]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_4_Key_2]" Name="[AssocApp_HKLM_4_Name_2]" Value="[AssocApp_HKLM_4_Value_2]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_4_Key_3]" Name="[AssocApp_HKLM_4_Name_3]" Value="[AssocApp_HKLM_4_Value_3]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_4_Key_4]" Name="[AssocApp_HKLM_4_Name_4]" Value="[AssocApp_HKLM_4_Value_4]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_4_Key_5]" Name="[AssocApp_HKLM_4_Name_5]" Value="[AssocApp_HKLM_4_Value_5]" Type="string" Action="write" />
+      </Component>
+      <Component Id="AssocAppHKLM5RegistryComponent" Guid="f675a169-2c5b-4262-b798-760834e45b7b" NeverOverwrite="yes">
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_5_Key_0]" Name="[AssocApp_HKLM_5_Name_0]" Value="[AssocApp_HKLM_5_Value_0]" Type="string" Action="write" KeyPath="yes" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_5_Key_1]" Name="[AssocApp_HKLM_5_Name_1]" Value="[AssocApp_HKLM_5_Value_1]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_5_Key_2]" Name="[AssocApp_HKLM_5_Name_2]" Value="[AssocApp_HKLM_5_Value_2]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_5_Key_3]" Name="[AssocApp_HKLM_5_Name_3]" Value="[AssocApp_HKLM_5_Value_3]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_5_Key_4]" Name="[AssocApp_HKLM_5_Name_4]" Value="[AssocApp_HKLM_5_Value_4]" Type="string" Action="write" />
+        <RegistryValue Root="HKLM" Key="[AssocApp_HKLM_5_Key_5]" Name="[AssocApp_HKLM_5_Name_5]" Value="[AssocApp_HKLM_5_Value_5]" Type="string" Action="write" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

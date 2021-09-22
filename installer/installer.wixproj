@@ -28,13 +28,13 @@
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="COMRegistry.wxs" />
-    <Compile Include="AppAssocRegistry.wxs" />
+    <Compile Include="COMRegistryComponents.wxs" />
+    <Compile Include="AppAssocRegistryFeatures.wxs" />
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="COMRegistry.xslt" />
-    <Content Include="COMRegistryTransform.xsl" />
+    <Content Include="COMRegistryComponents.xslt" />
+    <Content Include="RegistryHarvestTransform.xsl" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixUIExtension">
@@ -48,15 +48,15 @@
     <Error Text="The WiX Toolset v3.11 (or newer) build tools must be installed to build this project. To download the WiX Toolset, see http://wixtoolset.org/releases/" />
   </Target>
   <PropertyGroup>
+    <PostBuildEvent>ren "$(ProjectDir)bin\$(Platform)\$(Configuration)\FITS Explorer Extension.msi" "FITS Explorer Extension ($(Platform)).msi"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
     <PreBuildEvent>xcopy /Y "$(SolutionDir)bin\Win32\$(Configuration)\%2a" "$(ProjectDir)resources\bin\x86\"
 xcopy /Y "$(SolutionDir)bin\x64\$(Configuration)\%2a" "$(ProjectDir)resources\bin\x64\"
 
-call "$(WIX)bin\heat.exe" file "$(ProjectDir)resources\bin\x86\FITSExplorerExtension32.dll" -generate components -srd -gg -g1 -t "$(ProjectDir)COMRegistry.xslt" -o "$(ProjectDir)COMRegistry.wxs"
+call "$(WIX)bin\heat.exe" file "$(ProjectDir)resources\bin\x86\FITSExplorerExtension32.dll" -generate components -srd -gg -g1 -t "$(ProjectDir)COMRegistryComponents.xslt" -o "$(ProjectDir)COMRegistryComponents.wxs"
 
 del /f "$(ProjectDir)bin\$(Platform)\$(Configuration)\FITS Explorer Extension ($(Platform)).msi"</PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>ren "$(ProjectDir)bin\$(Platform)\$(Configuration)\FITS Explorer Extension.msi" "FITS Explorer Extension ($(Platform)).msi"</PostBuildEvent>
   </PropertyGroup>
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.

@@ -5,7 +5,6 @@
 <?define Arch = "x64" ?>
 <?define ArchSuffix = "" ?>
 <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
-<?define Resources = "resources\" ?>
 <?define Binaries = "resources\bin\x64\" ?>
 <?else ?>
 <?define ProductName = "FITS Explorer Extension (32 bit)" ?>
@@ -13,11 +12,12 @@
 <?define Arch = "x86" ?>
 <?define ArchSuffix = "32" ?>
 <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
-<?define Resources = "resources\" ?>
 <?define Binaries = "resources\bin\x86\" ?>
 <?endif ?>
+<?define Resources = "resources\" ?>
+<?define Version = "1.0.1" ?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="$(var.ProductName)" Language="1033" Version="1.0.0.0" Manufacturer="TCB" UpgradeCode="a7e7d7c8-c8b3-4482-b785-b996c176fd20">
+  <Product Id="*" Name="$(var.ProductName)" Language="1033" Version="$(var.Version).0" Manufacturer="TCB" UpgradeCode="a7e7d7c8-c8b3-4482-b785-b996c176fd20">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     
     <MajorUpgrade DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
@@ -29,12 +29,8 @@
     <Feature Id="FITSExplorerExtension" Title="FITS Explorer Extension" Level="1" Absent="disallow" AllowAdvertise="no" TypicalDefault="install" Display="expand" Description="Essential components, e.g., the thumbnail extension." ConfigurableDirectory="INSTALLFOLDER">
       <ComponentGroupRef Id="EssentialComponents" />
 
-      <Feature Id="VCRedist" Title="Visual C++ 14.0 Runtime" AllowAdvertise="no" Display="hidden" Level="1">
-        <MergeRef Id="VCRedist"/>
-      </Feature>
-
       <Feature Id="AppAssocFeature" Title="Extensions for other applications" Level="1" Absent="allow" AllowAdvertise="no" InstallDefault="followParent" TypicalDefault="install" Display="expand" Description="Extensions for other applications. This enables .fits/.fit file tooltips and file properties details for the listed applications." ConfigurableDirectory="INSTALLFOLDER">
-        <FeatureGroupRef Id="AssocAppFeatures"/>
+        <FeatureGroupRef Id="AppAssocFeatures"/>
       </Feature>
     </Feature>
 
@@ -57,9 +53,7 @@
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="$(var.PlatformProgramFilesFolder)">
-        <Directory Id="INSTALLFOLDER" Name="FITS Explorer Extension">
-          <Merge Id="VCRedist" SourceFile="$(var.Resources)Microsoft_VC140_CRT_$(var.Arch).msm" DiskId="1" Language="0"/>
-        </Directory>
+        <Directory Id="INSTALLFOLDER" Name="FITS Explorer Extension" />
       </Directory>
     </Directory>
   </Fragment>
@@ -75,7 +69,8 @@
       <Component Id="zlib.dll" Win64="$(var.Win64)" Guid="34d66c39-f6f8-42b4-b440-ff02b1118e29">
         <File Id="zlib.dll" Source="$(var.Binaries)zlib$(var.ArchSuffix).dll" KeyPath="yes" />
       </Component>
-      <ComponentRef Id="COMRegistryComponent" />
+      <ComponentRef Id="COMRegistryComponentHKCU" />
+      <ComponentRef Id="COMRegistryComponentHKLM" />
     </ComponentGroup>
   </Fragment>
 </Wix>
