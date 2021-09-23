@@ -13,7 +13,148 @@ HRESULT HRESULTFromRegAction(ULONG status)
 	return HRESULT_FROM_WIN32(status);
 }
 
-typedef std::tuple<HKEY, std::wstring, std::wstring> AssocApp;
+struct AssocApp
+{
+	AssocApp(HKEY hkey, std::wstring regKey, std::wstring appName, std::wstring fileExt)
+		: data(std::make_tuple(hkey, regKey, appName, fileExt))
+	{
+	}
+
+	HKEY const hKey() const { return std::get<0>(data); };
+	std::wstring const& regKey() const { return std::get<1>(data); };
+	std::wstring const& appName() const { return std::get<2>(data); };
+	std::wstring const& fileExt() const { return std::get<3>(data); };
+
+	bool operator<(AssocApp const& other) const
+	{
+		return data < other.data;
+	}
+
+	bool operator==(AssocApp const& other) const
+	{
+		return data == other.data;
+	}
+private:
+	std::tuple<HKEY, std::wstring, std::wstring, std::wstring> data;
+};
+
+HRESULT FindExistingFileClasses(HKEY hKeyRoot, PCWSTR fileExt, std::set<AssocApp> &apps)
+{
+	WCHAR szFileClassKeyName[128];
+	szFileClassKeyName[0] = '\0';
+
+	HRESULT hr = StringCchPrintf(szFileClassKeyName, ARRAYSIZE(szFileClassKeyName), L"Software\\Classes\\.%s", fileExt);
+	if (FAILED(hr))
+	{
+		return hr;
+	}
+
+	HKEY hKey;
+	hr = HRESULTFromRegAction(RegOpenKeyEx(hKeyRoot, szFileClassKeyName, 0, KEY_READ, &hKey));
+	if (FAILED(hr))
+	{
+		RegCloseKey(hKey);
+		return hr;
+	}
+
+	if (hr == S_OK)
+	{
+		const DWORD cBufferSize = 128;
+		WCHAR szBuffer[cBufferSize];
+		szBuffer[0] = '\0';
+		DWORD dwBufferSize = cBufferSize;
+
+		DWORD type;
+		hr = HRESULTFromRegAction(RegQueryValueEx(hKey, NULL, NULL, &type, (LPBYTE)szBuffer, &dwBufferSize));
+		
+		RegCloseKey(hKey);
+
+		if (FAILED(hr))
+		{
+			return hr;
+		}
+
+		if (hr == S_OK && type == REG_SZ && dwBufferSize > 0)
+		{
+			WCHAR szClassGroupKeyName[256];
+			szClassGroupKeyName[0] = '\0';
+
+			hr = StringCchPrintf(szClassGroupKeyName, ARRAYSIZE(szClassGroupKeyName), L"Software\\Classes\\%s", szBuffer);
+			if (FAILED(hr))
+			{
+				return hr;
+			}
+
+			hr = HRESULTFromRegAction(RegOpenKeyEx(hKeyRoot, szClassGroupKeyName, 0, KEY_READ, &hKey));
+			if (FAILED(hr))
+			{
+				return hr;
+			}
+
+			RegCloseKey(hKey);
+
+			if (hr == S_OK)
+			{
+				std::wstring appName(szBuffer);
+
+				// Try using the value of shell\open (i.e. the
+				// application the file will be opened with)
+				// as the app name. If it doesn't exist it falls
+				// back to the class group name.
+
+				WCHAR szShellOpenKeyName[256];
+				szShellOpenKeyName[0] = '\0';
+
+				hr = StringCchPrintf(szShellOpenKeyName, ARRAYSIZE(szShellOpenKeyName), L"Software\\Classes\\%s\\shell\\open", szBuffer);
+				if (FAILED(hr))
+				{
+					return hr;
+				}
+
+				hr = HRESULTFromRegAction(RegOpenKeyEx(hKeyRoot, szShellOpenKeyName, 0, KEY_READ, &hKey));
+				if (FAILED(hr))
+				{
+					return hr;
+				}
+
+				if (hr == S_OK)
+				{
+					szBuffer[0] = '\0';
+					dwBufferSize = cBufferSize;
+
+					hr = HRESULTFromRegAction(RegQueryValueEx(hKey, NULL, NULL, &type, (LPBYTE)szBuffer, &dwBufferSize));
+
+					RegCloseKey(hKey);
+
+					if (FAILED(hr))
+					{
+						return hr;
+					}
+
+					if (hr == S_OK && type == REG_SZ && dwBufferSize > 0)
+					{
+						appName = std::wstring(szBuffer);
+					}
+				}
+				else
+				{
+					RegCloseKey(hKey);
+				}
+
+				// Found existing class group that already
+				// claimed file type
+				AssocApp app(hKeyRoot, std::wstring(szClassGroupKeyName) + std::wstring(L"\\"), appName, std::wstring(fileExt));
+				apps.emplace(app);
+			}
+		}
+	}
+	else
+	{
+		RegCloseKey(hKey);
+	}
+
+	return hr;
+}
 
 HRESULT FindAssociatedApplications(HKEY hKeyRoot, PCWSTR fileExt, std::set<AssocApp> &apps)
 {
@@ -36,7 +177,7 @@ HRESULT FindAssociatedApplications(HKEY hKeyRoot, PCWSTR fileExt, std::set<Assoc
 
 	if (hr == S_OK)
 	{
-		const DWORD cBufferSize = 256;
+		const DWORD cBufferSize = 128;
 		WCHAR szBuffer[cBufferSize];
 		szBuffer[0] = '\0';
 		DWORD dwBufferSize = cBufferSize;
@@ -86,7 +227,8 @@ HRESULT FindAssociatedApplications(HKEY hKeyRoot, PCWSTR fileExt, std::set<Assoc
 				if (hr == S_OK)
 				{
 					// Found associated application
-					apps.emplace(std::make_tuple(hKeyRoot, std::wstring(szBuffer), std::wstring(fileExt)));
+					AssocApp app(hKeyRoot, std::wstring(L"Software\\Classes\\Applications\\") + std::wstring(szBuffer), std::wstring(szBuffer), std::wstring(fileExt));
+					apps.emplace(app);
 				}
 			}
 		}
@@ -95,6 +237,10 @@ HRESULT FindAssociatedApplications(HKEY hKeyRoot, PCWSTR fileExt, std::set<Assoc
 			// No associated application, don't need to do anything
 			RegCloseKey(hKey);
 		}
+	}
+	else
+	{
+		RegCloseKey(hKey);
 	}
 
 	return hr;
@@ -126,15 +272,22 @@ UINT __stdcall SetAssociatedApplications(
 
 		hr = FindAssociatedApplications(HKEY_LOCAL_MACHINE, SZ_FILE_EXT[i], apps);
 		ExitOnFailure(hr, "Failed to find associated applications in HKLM");
+		
+		hr = FindExistingFileClasses(HKEY_CURRENT_USER, SZ_FILE_EXT[i], apps);
+		ExitOnFailure(hr, "Failed to find existing file classes in HKCU");
+
+		hr = FindExistingFileClasses(HKEY_LOCAL_MACHINE, SZ_FILE_EXT[i], apps);
+		ExitOnFailure(hr, "Failed to find existing file classes in HKLM");
 	}
 
 	int nhkcu = 0;
 	int nhklm = 0;
 	for (auto const& app : apps)
 	{
-		HKEY const hKey = std::get<0>(app);
-		std::wstring const appName = std::get<1>(app);
-		std::wstring const appExt = std::get<2>(app);
+		HKEY const hKey = app.hKey();
+		std::wstring const regKey = app.regKey();
+		std::wstring const appName = app.appName();
+		std::wstring const appExt = app.fileExt();
 
 		std::string log(appName.begin(), appName.end());
 		log = "Found associated application: " + log;
@@ -167,7 +320,6 @@ UINT __stdcall SetAssociatedApplications(
 			hr = WcaSetProperty(regRootWProp.str().c_str(), hkeyWStr.c_str());
 			ExitOnFailure(hr, "Failed to set property");
 
-			std::wstring regKey = L"Software\\Classes\\Applications\\" + appName;
 			std::wstringstream regKeyWProp;
 			regKeyWProp << L"AssocApp_" << hkeyWStr << "_" << assocAppIndex << L"_Key_" << propertyIndex;
 			hr = WcaSetProperty(regKeyWProp.str().c_str(), regKey.c_str());
