@@ -64,6 +64,8 @@ public:
 	FITSDatatype storageType() { return _storageType; };
 	FITSDatatype readType() { return _readType; };
 	std::string bayerPattern() { return _bayerPattern; };
+	int bayerOffsetX() { return _bayerOffsetX; };
+	int bayerOffsetY() { return _bayerOffsetY; };
 	bool hasCfa() { return _hasCfa; };
 	std::array<float, 12> cfa() { return _cfa; };
 	std::string filter() { return _filter; };
@@ -97,6 +99,8 @@ private:
 	float _kernelSize;
 	int _kernelStride;
 	std::string _bayerPattern;
+	int _bayerOffsetX;
+	int _bayerOffsetY;
 	bool _hasCfa;
 	std::array<float, 12> _cfa;
 	FITSImageDim _imgDim;

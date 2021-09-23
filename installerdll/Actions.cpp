@@ -38,6 +38,20 @@ private:
 	std::tuple<HKEY, std::wstring, std::wstring, std::wstring> data;
 };
 
+std::wstring GetDisplayAppName(std::wstring& appName)
+{
+	std::wstring displayAppName(appName);
+	if (displayAppName.length() > 4)
+	{
+		std::wstring suffix = displayAppName.substr(displayAppName.length() - 4);
+		if (suffix == L".exe")
+		{
+			displayAppName = displayAppName.substr(0, displayAppName.length() - 4);
+		}
+	}
+	return displayAppName;
+}
+
 HRESULT FindExistingFileClasses(HKEY hKeyRoot, PCWSTR fileExt, std::set<AssocApp> &apps)
 {
 	WCHAR szFileClassKeyName[128];
@@ -143,7 +157,7 @@ HRESULT FindExistingFileClasses(HKEY hKeyRoot, PCWSTR fileExt, std::set<AssocApp
 
 				// Found existing class group that already
 				// claimed file type
-				AssocApp app(hKeyRoot, std::wstring(szClassGroupKeyName) + std::wstring(L"\\"), appName, std::wstring(fileExt));
+				AssocApp app(hKeyRoot, std::wstring(szClassGroupKeyName), GetDisplayAppName(appName), std::wstring(fileExt));
 				apps.emplace(app);
 			}
 		}
@@ -226,8 +240,10 @@ HRESULT FindAssociatedApplications(HKEY hKeyRoot, PCWSTR fileExt, std::set<Assoc
 
 				if (hr == S_OK)
 				{
+					std::wstring appName(szBuffer);
+
 					// Found associated application
-					AssocApp app(hKeyRoot, std::wstring(L"Software\\Classes\\Applications\\") + std::wstring(szBuffer), std::wstring(szBuffer), std::wstring(fileExt));
+					AssocApp app(hKeyRoot, std::wstring(L"Software\\Classes\\Applications\\") + appName, GetDisplayAppName(appName), std::wstring(fileExt));
 					apps.emplace(app);
 				}
 			}

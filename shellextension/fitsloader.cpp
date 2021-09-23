@@ -221,6 +221,30 @@ void FITSInfo::ReadHeader()
 				_hasCfa = false;
 			}
 
+			// ---- Read bayer pattern offset ----
+
+			if (ReadIntKeyword("XBAYROFF", &_bayerOffsetX, &status) != 0)
+			{
+				if (ReadIntKeyword("XBAYOFF", &_bayerOffsetX, &status) != 0)
+				{
+					if (ReadIntKeyword("BAYROFFX", &_bayerOffsetX, &status) != 0)
+					{
+						ReadIntKeyword("BAYOFFX", &_bayerOffsetX, &status);
+					}
+				}
+			}
+
+			if (ReadIntKeyword("YBAYROFF", &_bayerOffsetY, &status) != 0)
+			{
+				if (ReadIntKeyword("YBAYOFF", &_bayerOffsetY, &status) != 0)
+				{
+					if (ReadIntKeyword("BAYROFFY", &_bayerOffsetY, &status) != 0)
+					{
+						ReadIntKeyword("BAYOFFY", &_bayerOffsetY, &status);
+					}
+				}
+			}
+
 			// ---- Store image dim ----
 
 			_imgDim.nx = static_cast<int>(size[0]);
@@ -491,6 +515,32 @@ bool FITSInfo::ReadImage(int fits_datatype, bool issigned, unsigned char *data, 
 
 	bool hasNegative = false;
 
+	std::array<float, 12> cfa;
+	if (_hasCfa)
+	{
+		cfa = _cfa;
+
+		if ((abs(_bayerOffsetX) % 2) != 0)
+		{
+			// flip cfa along X axis
+			for (int i = 0; i < 3; i++)
+			{
+				std::swap(cfa[0 + i * 4], cfa[1 + i * 4]);
+				std::swap(cfa[2 + i * 4], cfa[3 + i * 4]);
+			}
+		}
+
+		if ((abs(_bayerOffsetY) % 2) != 0)
+		{
+			// flip cfa along Y axis
+			for (int i = 0; i < 3; i++)
+			{
+				std::swap(cfa[0 + i * 4], cfa[2 + i * 4]);
+				std::swap(cfa[1 + i * 4], cfa[3 + i * 4]);
+			}
+		}
+	}
+
 	Kernel<T_IN, T_OUT> kernel;
 	kernel.size = fullKernelSize;
 	kernel.stride = _kernelStride;
@@ -500,7 +550,7 @@ bool FITSInfo::ReadImage(int fits_datatype, bool issigned, unsigned char *data, 
 	kernel.inputHeight = _imgDim.ny;
 	kernel.outData = &imgData[0];
 	kernel.hasNegative = &hasNegative;
-	kernel.cfa = _hasCfa ? _cfa.data() : nullptr;
+	kernel.cfa = _hasCfa ? cfa.data() : nullptr;
 	kernel.rgb = _outDim.nc == 3;
 
 	int status = 0;

@@ -15,7 +15,7 @@
 <?define Binaries = "resources\bin\x86\" ?>
 <?endif ?>
 <?define Resources = "resources\" ?>
-<?define Version = "1.0.1" ?>
+<?define Version = "1.0.2" ?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="*" Name="$(var.ProductName)" Language="1033" Version="$(var.Version).0" Manufacturer="TCB" UpgradeCode="a7e7d7c8-c8b3-4482-b785-b996c176fd20">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
