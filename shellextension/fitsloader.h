@@ -118,7 +118,7 @@ private:
 	int ReadFloatKeyword(char *key, float *value, int *status);
 	int ReadDateKeyword(char *key, FITSDate *value, int *status);
 
-	template<typename T>
+	template<typename T_IN, typename T_OUT>
 	bool ReadImage(int fits_datatype, bool issigned, unsigned char *data, FITSImageReadProps props);
 
 	template<typename T>

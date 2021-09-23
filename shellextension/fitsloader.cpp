@@ -394,38 +394,71 @@ bool FITSInfo::ReadImage(unsigned char *data, FITSImageReadProps props)
 
 	if (_readType.fitsDatatype == TFLOAT || _readType.fitsDatatype == TDOUBLE)
 	{
-		return ReadImage<float>(_readType.fitsDatatype, false, data, props);
+		return ReadImage<float, float>(_readType.fitsDatatype, false, data, props);
 	}
 	else if (_readType.size == 1)
 	{
-		return ReadImage<uint8_t>(_readType.fitsDatatype, _readType.isSigned, data, props);
+		if (_readType.isSigned)
+		{
+			return ReadImage<int8_t, uint8_t>(_readType.fitsDatatype, true, data, props);
+		}
+		else
+		{
+			return ReadImage<uint8_t, uint8_t>(_readType.fitsDatatype, false, data, props);
+		}
 	}
 	else if (_readType.size == 2)
 	{
-		return ReadImage<uint16_t>(_readType.fitsDatatype, _readType.isSigned, data, props);
+		if (_readType.isSigned)
+		{
+			return ReadImage<int16_t, uint16_t>(_readType.fitsDatatype, true, data, props);
+		}
+		else
+		{
+			return ReadImage<uint16_t, uint16_t>(_readType.fitsDatatype, false, data, props);
+		}
 	}
-	else if (_readType.size == 4)
+	else if (_readType.size >= 4)
 	{
-		return ReadImage<uint32_t>(_readType.fitsDatatype, _readType.isSigned, data, props);
-	}
-	else if (_readType.size == 8)
-	{
-		return ReadImage<uint32_t>(_readType.fitsDatatype, _readType.isSigned, data, props);
+		if (_readType.isSigned)
+		{
+			return ReadImage<int32_t, uint32_t>(_readType.fitsDatatype, true, data, props);
+		}
+		else
+		{
+			return ReadImage<uint32_t, uint32_t>(_readType.fitsDatatype, false, data, props);
+		}
 	}
 	else
 	{
-		return ReadImage<float>(_readType.fitsDatatype, false, data, props);
+		return ReadImage<float, float>(_readType.fitsDatatype, false, data, props);
 	}
 }
 
 template<typename T>
+T GetSignedToUnsignedConversionOffset(std::true_type)
+{
+	return (T)-std::numeric_limits<std::make_signed_t<T>>::min();
+}
+template<typename T>
+T GetSignedToUnsignedConversionOffset(std::false_type)
+{
+	return 0;
+}
+template<typename T>
+T GetSignedToUnsignedConversionOffset()
+{
+	return GetSignedToUnsignedConversionOffset<T>(std::integral_constant<bool, std::is_integral<T>::value>{});
+}
+
+template<typename T_IN, typename T_OUT>
 bool FITSInfo::ReadImage(int fits_datatype, bool issigned, unsigned char *data, FITSImageReadProps props)
 {
 	long fpixel(1);
-	T nulval(0);
+	T_OUT nulval(0);
 	int anynul(0);
 
-	std::valarray<T> imgData(_outDim.n);
+	std::valarray<T_OUT> imgData(_outDim.n);
 
 	int fullKernelSize = (int)ceil(_kernelSize);
 
@@ -456,14 +489,17 @@ bool FITSInfo::ReadImage(int fits_datatype, bool issigned, unsigned char *data, 
 		}
 	}
 
-	Kernel<T> kernel;
+	bool hasNegative = false;
+
+	Kernel<T_IN, T_OUT> kernel;
 	kernel.size = fullKernelSize;
 	kernel.stride = _kernelStride;
 	kernel.weights = &weights[0];
-	kernel.offset = issigned ? std::numeric_limits<T>::max() : 0;
+	kernel.offset = issigned ? GetSignedToUnsignedConversionOffset<T_OUT>() : 0;
 	kernel.inputWidth = _imgDim.nx;
 	kernel.inputHeight = _imgDim.ny;
 	kernel.outData = &imgData[0];
+	kernel.hasNegative = &hasNegative;
 	kernel.cfa = _hasCfa ? _cfa.data() : nullptr;
 	kernel.rgb = _outDim.nc == 3;
 
@@ -473,9 +509,18 @@ bool FITSInfo::ReadImage(int fits_datatype, bool issigned, unsigned char *data, 
 		return false;
 	}
 
-	ProcessImage<T>(imgData);
+	// if the storage type is signed but no
+	// negative values have been found then
+	// it's likely that the data was originally
+	// unsigned and so the offset is removed again
+	if (issigned && !hasNegative && kernel.offset != 0)
+	{
+		imgData -= kernel.offset;
+	}
 
-	StoreImageBGRA32<T>(imgData, data, props);
+	ProcessImage<T_OUT>(imgData);
+
+	StoreImageBGRA32<T_OUT>(imgData, data, props);
 
 	return true;
 };
