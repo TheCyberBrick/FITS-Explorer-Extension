@@ -51,6 +51,24 @@
           </xsl:call-template>
         </xsl:attribute>
       </xsl:when>
+      <xsl:when test="parent::*/@*[contains(., concat('[#', $generated-file-id, ']'))]">
+        <xsl:attribute name="{name(.)}">
+          <xsl:call-template name="reg-harvest-transform-replace-string">
+            <xsl:with-param name="source" select="." />
+            <xsl:with-param name="find" select="concat('[#', $generated-file-id, ']')" />
+            <xsl:with-param name="repl" select="concat('[#', $file-id, ']')" />
+          </xsl:call-template>
+        </xsl:attribute>
+      </xsl:when>
+      <xsl:when test="parent::*/@*[contains(., concat('[', $generated-file-id, ']'))]">
+        <xsl:attribute name="{name(.)}">
+          <xsl:call-template name="reg-harvest-transform-replace-string">
+            <xsl:with-param name="source" select="." />
+            <xsl:with-param name="find" select="concat('[', $generated-file-id, ']')" />
+            <xsl:with-param name="repl" select="concat('[', $file-id, ']')" />
+          </xsl:call-template>
+        </xsl:attribute>
+      </xsl:when>
 
       <!-- no other changes -->
       <xsl:otherwise>
