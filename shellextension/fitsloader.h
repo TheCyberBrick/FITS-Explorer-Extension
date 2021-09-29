@@ -23,6 +23,7 @@ typedef struct
 typedef struct
 {
 	bool monoColorOutline;
+	float saturation;
 } FITSImageReadProps;
 
 enum class FITSColorFilter

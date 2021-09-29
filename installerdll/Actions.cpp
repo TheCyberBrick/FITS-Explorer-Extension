@@ -329,7 +329,7 @@ UINT __stdcall SetAssociatedApplications(
 
 		for (int propertyIndex = 0; propertyIndex < ARRAYSIZE(PROPERTY_LISTS); propertyIndex++)
 		{
-			PROPERTYLIST prop = PROPERTY_LISTS[propertyIndex];
+			PropertyList prop = PROPERTY_LISTS[propertyIndex];
 
 			std::wstringstream regRootWProp;
 			regRootWProp << L"AssocApp_" << hkeyWStr << "_" << assocAppIndex << L"_Root_" << propertyIndex;

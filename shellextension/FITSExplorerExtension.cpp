@@ -12,15 +12,10 @@
 
 #include "Dll.h"
 #include "fitsloader.h"
+#include "registryutil.h"
 
 void DllAddRef();
 void DllRelease();
-
-// TODO Get these values from registry
-const size_t MAX_INPUT_SIZE = 8192 /*x*/ * 8192 /*y*/ * 3 /*rgb*/ * 4 /*bytes per component*/;
-const int MAX_WIDTH = 512;
-const int MAX_HEIGHT = 512;
-const size_t MAX_OUTPUT_SIZE = MAX_INPUT_SIZE;
 
 class CFITSExplorerExtension :
 	public IInitializeWithStream,
@@ -29,7 +24,7 @@ class CFITSExplorerExtension :
 	public IPropertyStoreCapabilities
 {
 public:
-	CFITSExplorerExtension() : _cRef(1), _pStream(NULL), _pFITSPropertyCache(NULL), _pFITSInfo(NULL)
+	CFITSExplorerExtension() : _cRef(1), _pSettings(NULL), _pStream(NULL), _pFITSPropertyCache(NULL), _pFITSInfo(NULL)
 	{
 		DllAddRef();
 	}
@@ -52,6 +47,12 @@ public:
 		{
 			delete _pFITSInfo;
 			_pFITSInfo = NULL;
+		}
+
+		if (_pSettings)
+		{
+			delete _pSettings;
+			_pSettings = NULL;
 		}
 
 		DllRelease();
@@ -101,8 +102,11 @@ public:
 	IFACEMETHODIMP IsPropertyWritable(REFPROPERTYKEY key);
 
 private:
+	HRESULT _LoadSettings();
 	HRESULT _LoadFITSInfo();
 	HRESULT _LoadFITSPropertyCache();
+
+	Settings *_pSettings;
 
 	long _cRef;
 	IStream *_pStream;
@@ -123,26 +127,114 @@ HRESULT CFITSExplorerExtension_CreateInstance(REFIID riid, void **ppv)
 	return hr;
 }
 
+HRESULT CFITSExplorerExtension::_LoadSettings()
+{
+	HRESULT hr = E_FAIL;
+
+	if (!_pSettings)
+	{
+		_pSettings = new (std::nothrow) Settings();
+	}
+	hr = _pSettings ? S_OK : E_OUTOFMEMORY;
+	if (SUCCEEDED(hr))
+	{
+		DWORD value;
+
+		hr = GetSettingsRegKeyValue(HKEY_CURRENT_USER, L"MaxInputSize", &value);
+		if (SUCCEEDED(hr))
+		{
+			_pSettings->maxInputSize = value;
+		}
+		else
+		{
+			_pSettings->maxInputSize = DEFAULT_SETTINGS.maxInputSize;
+			hr = S_OK;
+		}
+
+		hr = GetSettingsRegKeyValue(HKEY_CURRENT_USER, L"MaxOutputSize", &value);
+		if (SUCCEEDED(hr))
+		{
+			_pSettings->maxOutputSize = value;
+		}
+		else
+		{
+			_pSettings->maxOutputSize = DEFAULT_SETTINGS.maxOutputSize;
+			hr = S_OK;
+		}
+
+		hr = GetSettingsRegKeyValue(HKEY_CURRENT_USER, L"MaxThumbnailWidth", &value);
+		if (SUCCEEDED(hr))
+		{
+			_pSettings->maxThumbnailWidth = value;
+		}
+		else
+		{
+			_pSettings->maxThumbnailWidth = DEFAULT_SETTINGS.maxThumbnailWidth;
+			hr = S_OK;
+		}
+
+		hr = GetSettingsRegKeyValue(HKEY_CURRENT_USER, L"MaxThumbnailHeight", &value);
+		if (SUCCEEDED(hr))
+		{
+			_pSettings->maxThumbnailHeight = value;
+		}
+		else
+		{
+			_pSettings->maxThumbnailHeight = DEFAULT_SETTINGS.maxThumbnailHeight;
+			hr = S_OK;
+		}
+
+		hr = GetSettingsRegKeyValue(HKEY_CURRENT_USER, L"MonoColorOutline", &value);
+		if (SUCCEEDED(hr))
+		{
+			_pSettings->monoColorOutline = value > 0;
+		}
+		else
+		{
+			_pSettings->monoColorOutline = DEFAULT_SETTINGS.monoColorOutline;
+			hr = S_OK;
+		}
+
+		hr = GetSettingsRegKeyValue(HKEY_CURRENT_USER, L"Saturation", &value);
+		if (SUCCEEDED(hr))
+		{
+			_pSettings->saturation = value;
+		}
+		else
+		{
+			_pSettings->saturation = DEFAULT_SETTINGS.saturation;
+			hr = S_OK;
+		}
+	}
+
+	return hr;
+}
+
 HRESULT CFITSExplorerExtension::_LoadFITSInfo()
 {
 	if (!_pStream)
 	{
 		return E_UNEXPECTED;
 	}
-	STATSTG stat;
-	HRESULT hr = _pStream->Stat(&stat, STATFLAG_NONAME);
+	HRESULT hr = _LoadSettings();
 	if (FAILED(hr))
 	{
 		return hr;
 	}
-	if (stat.cbSize.QuadPart > MAX_INPUT_SIZE)
+	STATSTG stat;
+	hr = _pStream->Stat(&stat, STATFLAG_NONAME);
+	if (FAILED(hr))
+	{
+		return hr;
+	}
+	if (stat.cbSize.QuadPart > _pSettings->maxInputSize)
 	{
 		hr = E_FAIL;
 		return hr;
 	}
 	if (!_pFITSInfo)
 	{
-		_pFITSInfo = new (std::nothrow) FITSInfo(_pStream, MAX_INPUT_SIZE, MAX_WIDTH, MAX_HEIGHT);
+		_pFITSInfo = new (std::nothrow) FITSInfo(_pStream, _pSettings->maxInputSize, _pSettings->maxThumbnailWidth, _pSettings->maxThumbnailHeight);
 	}
 	hr = _pFITSInfo ? S_OK : E_OUTOFMEMORY;
 	if (SUCCEEDED(hr))
@@ -290,55 +382,64 @@ IFACEMETHODIMP CFITSExplorerExtension::GetThumbnail(UINT cx, HBITMAP *phbmp, WTS
 	*phbmp = NULL;
 	*pdwAlpha = WTSAT_RGB;
 
-	HRESULT hr = _LoadFITSInfo();
-	if (SUCCEEDED(hr))
+	HRESULT hr = _LoadSettings();
+	if (FAILED(hr))
 	{
-		FITSImageDim dim = _pFITSInfo->outDim();
+		return hr;
+	}
 
-		if ((size_t)dim.nx * (size_t)dim.ny * (size_t)16 > MAX_OUTPUT_SIZE)
+	hr = _LoadFITSInfo();
+	if (FAILED(hr))
+	{
+		return hr;
+	}
+
+	FITSImageDim dim = _pFITSInfo->outDim();
+
+	if ((size_t)dim.nx * (size_t)dim.ny * (size_t)16 > _pSettings->maxOutputSize)
+	{
+		hr = E_FAIL;
+	}
+	else
+	{
+		BITMAPINFOHEADER bmih;
+		bmih.biSize = sizeof(BITMAPINFOHEADER);
+		bmih.biWidth = dim.nx;
+		bmih.biHeight = -dim.ny;
+		bmih.biPlanes = 1;
+		bmih.biBitCount = 32;
+		bmih.biCompression = BI_RGB;
+		bmih.biSizeImage = dim.nx * dim.ny * 4;
+		bmih.biXPelsPerMeter = 10;
+		bmih.biYPelsPerMeter = 10;
+		bmih.biClrUsed = 0;
+		bmih.biClrImportant = 0;
+
+		BITMAPINFO dbmi;
+		ZeroMemory(&dbmi, sizeof(dbmi));
+		dbmi.bmiHeader = bmih;
+		dbmi.bmiColors->rgbBlue = 0;
+		dbmi.bmiColors->rgbGreen = 0;
+		dbmi.bmiColors->rgbRed = 0;
+		dbmi.bmiColors->rgbReserved = 0;
+
+		void *bits = NULL;
+		HBITMAP hbmp = CreateDIBSection(NULL, &dbmi, DIB_RGB_COLORS, &bits, NULL, 0);
+
+		unsigned char *data = (unsigned char*)bits;
+
+		FITSImageReadProps props;
+		props.monoColorOutline = _pSettings->monoColorOutline;
+		props.saturation = _pSettings->saturation / 1024.0f;
+
+		if (!_pFITSInfo->ReadImage(data, props))
 		{
 			hr = E_FAIL;
 		}
-		else
+
+		if (SUCCEEDED(hr))
 		{
-			BITMAPINFOHEADER bmih;
-			bmih.biSize = sizeof(BITMAPINFOHEADER);
-			bmih.biWidth = dim.nx;
-			bmih.biHeight = -dim.ny;
-			bmih.biPlanes = 1;
-			bmih.biBitCount = 32;
-			bmih.biCompression = BI_RGB;
-			bmih.biSizeImage = dim.nx * dim.ny * 4;
-			bmih.biXPelsPerMeter = 10;
-			bmih.biYPelsPerMeter = 10;
-			bmih.biClrUsed = 0;
-			bmih.biClrImportant = 0;
-
-			BITMAPINFO dbmi;
-			ZeroMemory(&dbmi, sizeof(dbmi));
-			dbmi.bmiHeader = bmih;
-			dbmi.bmiColors->rgbBlue = 0;
-			dbmi.bmiColors->rgbGreen = 0;
-			dbmi.bmiColors->rgbRed = 0;
-			dbmi.bmiColors->rgbReserved = 0;
-
-			void *bits = NULL;
-			HBITMAP hbmp = CreateDIBSection(NULL, &dbmi, DIB_RGB_COLORS, &bits, NULL, 0);
-
-			unsigned char *data = (unsigned char*)bits;
-
-			FITSImageReadProps props;
-			props.monoColorOutline = true;
-
-			if (!_pFITSInfo->ReadImage(data, props))
-			{
-				hr = E_FAIL;
-			}
-
-			if (SUCCEEDED(hr))
-			{
-				*phbmp = hbmp;
-			}
+			*phbmp = hbmp;
 		}
 	}
 

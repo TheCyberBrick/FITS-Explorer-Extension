@@ -25,6 +25,7 @@
     <ClInclude Include="fitstypeutil.h" />
     <ClInclude Include="hsv.h" />
     <ClInclude Include="kerneldataiterator.h" />
+    <ClInclude Include="registryutil.h" />
     <ClInclude Include="stretch.h" />
   </ItemGroup>
   <ItemGroup>
@@ -35,6 +36,7 @@
     <ClCompile Include="FITSExplorerExtension.cpp" />
     <ClCompile Include="fitsloader.cpp" />
     <ClCompile Include="fitstypeutil.cpp" />
+    <ClCompile Include="registryutil.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

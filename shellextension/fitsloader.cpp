@@ -496,7 +496,7 @@ bool FITSInfo::ReadImage(int fits_datatype, bool issigned, unsigned char *data, 
 	else
 	{
 		// generate gaussian kernel
-		float sigma = 0.5f * _kernelSize;
+		float sigma = (_kernelStride - 1) / 6.0f;
 		float s = 2.0f * sigma * sigma;
 		float sum = 0.0f;
 		for (int x = -fullKernelSize; x <= fullKernelSize; x++) {
@@ -723,7 +723,7 @@ void FITSInfo::StoreImageBGRA32(std::valarray<T>& inData, unsigned char *outData
 
 				HsvColor hsv = RgbToHsv(rgb);
 
-				hsv.s = std::min((unsigned char)(1.5f * hsv.s), (unsigned char)255);
+				hsv.s = std::min((unsigned char)(props.saturation * hsv.s), (unsigned char)255);
 
 				rgb = HsvToRgb(hsv);
 
